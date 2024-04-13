@@ -1,0 +1,122 @@
+(base) karenmai@Karens-MacBook-Pro-2 tests % gcc demo.s print.s -o demo        
+print.s:3:18: error: unexpected token at start of statement
+ .globl _print ; -- Begin function print
+                 ^
+print.s:5:11: error: invalid instruction mnemonic '@print'
+_print: ; @print
+          ^~~~~~
+print.s:7:3: error: unexpected token at start of statement
+; %bb.0:
+  ^
+print.s:8:14: error: unknown token in expression
+ sub sp, sp, #32
+             ^
+print.s:9:16: error: brackets expression not supported on this target
+ stp x29, x30, [sp, #16] ; 16-byte Folded Spill
+               ^
+print.s:10:15: error: unknown token in expression
+ add x29, sp, #16
+              ^
+print.s:11:18: error: invalid register name
+ .cfi_def_cfa w29, 16
+                 ^
+print.s:12:17: error: invalid register name
+ .cfi_offset w30, -8
+                ^
+print.s:13:17: error: invalid register name
+ .cfi_offset w29, -16
+                ^
+print.s:14:10: error: brackets expression not supported on this target
+ str x0, [sp, #8]
+         ^
+print.s:15:10: error: brackets expression not supported on this target
+ ldr x8, [sp, #8]
+         ^
+print.s:16:2: error: unknown use of instruction mnemonic without a size suffix
+ mov x9, sp
+ ^
+print.s:17:10: error: brackets expression not supported on this target
+ str x8, [x9]
+         ^
+print.s:18:2: error: invalid instruction mnemonic 'adrp'
+ adrp x0, l_.str@PAGE
+ ^~~~
+print.s:19:2: error: unknown use of instruction mnemonic without a size suffix
+ add x0, x0, l_.str@PAGEOFF
+ ^
+print.s:20:2: error: invalid instruction mnemonic 'bl'
+ bl _printf
+ ^~
+print.s:21:16: error: brackets expression not supported on this target
+ ldp x29, x30, [sp, #16] ; 16-byte Folded Reload
+               ^
+print.s:22:14: error: unknown token in expression
+ add sp, sp, #32
+             ^
+print.s:25:43: error: unexpected token at start of statement
+                                        ; -- End function
+                                          ^
+print.s:27:11: error: invalid instruction mnemonic '@.str'
+l_.str: ; @.str
+          ^~~~~
+(base) karenmai@Karens-MacBook-Pro-2 tests % gcc demo.s print.s -o demo
+print.s:3:18: error: unexpected token at start of statement
+ .globl _print ; -- Begin function print
+                 ^
+print.s:5:11: error: invalid instruction mnemonic '@print'
+_print: ; @print
+          ^~~~~~
+print.s:7:3: error: unexpected token at start of statement
+; %bb.0:
+  ^
+print.s:8:14: error: unknown token in expression
+ sub sp, sp, #32
+             ^
+print.s:9:16: error: brackets expression not supported on this target
+ stp x29, x30, [sp, #16] ; 16-byte Folded Spill
+               ^
+print.s:10:15: error: unknown token in expression
+ add x29, sp, #16
+              ^
+print.s:11:18: error: invalid register name
+ .cfi_def_cfa w29, 16
+                 ^
+print.s:12:17: error: invalid register name
+ .cfi_offset w30, -8
+                ^
+print.s:13:17: error: invalid register name
+ .cfi_offset w29, -16
+                ^
+print.s:14:10: error: brackets expression not supported on this target
+ str x0, [sp, #8]
+         ^
+print.s:15:10: error: brackets expression not supported on this target
+ ldr x8, [sp, #8]
+         ^
+print.s:16:2: error: unknown use of instruction mnemonic without a size suffix
+ mov x9, sp
+ ^
+print.s:17:10: error: brackets expression not supported on this target
+ str x8, [x9]
+         ^
+print.s:18:2: error: invalid instruction mnemonic 'adrp'
+ adrp x0, l_.str@PAGE
+ ^~~~
+print.s:19:2: error: unknown use of instruction mnemonic without a size suffix
+ add x0, x0, l_.str@PAGEOFF
+ ^
+print.s:20:2: error: invalid instruction mnemonic 'bl'
+ bl _printf
+ ^~
+print.s:21:16: error: brackets expression not supported on this target
+ ldp x29, x30, [sp, #16] ; 16-byte Folded Reload
+               ^
+print.s:22:14: error: unknown token in expression
+ add sp, sp, #32
+             ^
+print.s:25:43: error: unexpected token at start of statement
+                                        ; -- End function
+                                          ^
+print.s:27:11: error: invalid instruction mnemonic '@.str'
+l_.str: ; @.str
+          ^~~~~
