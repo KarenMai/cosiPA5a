@@ -50,17 +50,23 @@ public class CodeGen_Visitor implements Visitor {
 
 
     public Object visit(And node, Object data){ 
-        // not in MiniC
         Exp e1=node.e1;
         Exp e2=node.e2;
-        node.e1.accept(this, data);
-        node.e2.accept(this, data);
-        return "popq %rax\n" +
-               "popq %rdx\n" +
-               "imulq %rdx, %rax\n" +
-               "pushq %rax\n"; 
+        String expCode1 = (String) node.e1.accept(this, data);
+        String expCode2 = (String) node.e2.accept(this, data);
+        
+        String result = 
+            expCode1
+            + expCode2
+            + "# AND\n"
+            + "popq %rax\n"
+            + "popq %rdx\n"
+            + "imulq %rdx, %rax\n"
+            + "pushq %rax\n";
+        
+        return result; 
     } 
-
+    
     public Object visit(ArrayAssign node, Object data){ 
         // not in MiniC
         Identifier i = node.i;
@@ -124,9 +130,9 @@ public class CodeGen_Visitor implements Visitor {
 
     public int getNumArgs(ExpList e){
         /*
-         * for the ith argument to the call, store it in
-         * regFormals[i] starting with i=0
-         */
+            * for the ith argument to the call, store it in
+            * regFormals[i] starting with i=0
+            */
         if (e==null){
             return 0;
         } else {
@@ -169,11 +175,11 @@ public class CodeGen_Visitor implements Visitor {
         
         for (int j =0; j<numArgs; j++){
             storeArgsCode += 
-              "popq "+regFormals[j]+"\n";
+                "popq "+regFormals[j]+"\n";
         }
 
         makeCall = 
-              "# calling "+i.s+"\n"
+                "# calling "+i.s+"\n"
             + "callq _"+i.s+"\n"  // using function name as label with "_" prefix
             + "pushq %rax\n"; // push the result of the function on the stack
 
@@ -228,14 +234,14 @@ public class CodeGen_Visitor implements Visitor {
 
     public Object visit(ExpList node, Object data){ 
         /*
-         * ExpList is a left-associative tree, so
-         * if node represents a1,a2,...,ak
-         * then node.e = ak and
-         * node.elist = a1,....,a(k-1)
-         * This code will push ak first and a1 last
-         * so when we pop, a1 will be the first to be popped
-         * and ak the last
-         */
+            * ExpList is a left-associative tree, so
+            * if node represents a1,a2,...,ak
+            * then node.e = ak and
+            * node.elist = a1,....,a(k-1)
+            * This code will push ak first and a1 last
+            * so when we pop, a1 will be the first to be popped
+            * and ak the last
+            */
         Exp e=node.e;
         ExpList elist=node.elist;
         String result="";
@@ -248,7 +254,6 @@ public class CodeGen_Visitor implements Visitor {
     }
 
     public Object visit(False node, Object data){ 
-        // not implemented yet
         return "pushq $0\n";
     } 
 
@@ -696,19 +701,21 @@ public class CodeGen_Visitor implements Visitor {
         return "# NewObject not implemented\n"; 
     }
 
-
     public Object visit(Not node, Object data){ 
-        // not in MiniC
+        // Not    pops the stack to get x and pushes 1-x onto the stack
         Exp e=node.e;
-        node.e.accept(this, data);
+        String expCode = (String) node.e.accept(this, data);
 
-        return "popq %rax\n" +
-               "pushq $1\n" +
-               "popq %rdx\n" +
-               "subq %rax, %rdx\n" +
-               "pushq %rax\n"; 
+        String notCode = 
+            expCode +
+            "popq %rax\n" +
+            "pushq $1\n" +
+            "popq %rdx\n" +
+            "subq %rax, %rdx\n" +
+            "pushq %rdx\n";
+
+        return notCode; 
     }
-
 
     public Object visit(Plus node, Object data){ 
         Exp e1=node.e1;
@@ -806,9 +813,6 @@ public class CodeGen_Visitor implements Visitor {
 
 
     public Object visit(True node, Object data){ 
-        // not in MiniC
-        // pushes 1 onto the stack
-
         return "pushq $1\n"; 
     }
 
@@ -842,24 +846,23 @@ public class CodeGen_Visitor implements Visitor {
         return vars; 
     }
 
-    public Object visit(While node, Object data){ 
-        // not in MiniC
-        Exp e=node.e;
-        Statement s=node.s;
+    public Object visit(While node, Object data) {
+        Exp e = node.e;
+        Statement s = node.s;
         String eCode = (String) node.e.accept(this, data);
         String Scode = (String) node.s.accept(this, data);
-        String label1 = "L"+labelNum;
+        String label1 = "L" + labelNum;
         labelNum += 1;
-        String label2 = "L"+labelNum;
+        String label2 = "L" + labelNum;
         labelNum += 1;
 
-        return eCode +
-        label1+":\n"+
-        "popq %rax\n"+
-        "cmpq $0, %rax\n"+
-        "jne "+label2+"\n"+
-        Scode+
-        "jmp "+label1+"\n"+
-        label2+":\n"; 
+        return label1 + ":\n" +
+                eCode +
+                "popq %rax\n" +
+                "cmpq $0, %rax\n" +
+                "jne " + label2 + "\n" +
+                Scode +
+                "jmp " + label1 + "\n" +
+                label2 + ":\n";
     }
 }
