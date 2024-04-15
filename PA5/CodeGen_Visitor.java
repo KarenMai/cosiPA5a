@@ -50,21 +50,15 @@ public class CodeGen_Visitor implements Visitor {
 
 
     public Object visit(And node, Object data){ 
-        Exp e1 = node.e1;
-        Exp e2 = node.e2;
-        String expCode1 = (String) e1.accept(this, data);
-        String expCode2 = (String) e2.accept(this, data);
-        
-        String result = 
-            expCode1
-            + expCode2
-            + "# AND\n"
-            + "popq %rax\n"
-            + "popq %rdx\n"
-            + "imulq %rdx, %rax\n"
-            + "pushq %rax\n";
-        
-        return result; 
+        // not in MiniC
+        Exp e1=node.e1;
+        Exp e2=node.e2;
+        node.e1.accept(this, data);
+        node.e2.accept(this, data);
+        return "popq %rax\n" +
+               "popq %rdx\n" +
+               "imulq %rdx, %rax\n" +
+               "pushq %rax\n"; 
     } 
 
     public Object visit(ArrayAssign node, Object data){ 
@@ -254,10 +248,8 @@ public class CodeGen_Visitor implements Visitor {
     }
 
     public Object visit(False node, Object data){ 
-        // Push 0 onto the stack
-        node.accept(ppVisitor, data);
-        String code = "pushq $0\n";
-        return code;
+        // not implemented yet
+        return "pushq $0\n";
     } 
 
     public Object visit(Formal node, Object data){ 
@@ -706,18 +698,15 @@ public class CodeGen_Visitor implements Visitor {
 
 
     public Object visit(Not node, Object data){ 
+        // not in MiniC
         Exp e=node.e;
-        String eCode = (String) node.e.accept(this, data);
+        node.e.accept(this, data);
 
-        String notCode = 
-            eCode
-            + "# Not:"+node.accept(ppVisitor,0)+"\n"
-            + "popq %rax\n"
-            + "movq $1, %rdx\n"
-            + "subq %rax, %rdx\n"
-            + "pushq %rdx\n";
-
-        return notCode; 
+        return "popq %rax\n" +
+               "pushq $1\n" +
+               "popq %rdx\n" +
+               "subq %rax, %rdx\n" +
+               "pushq %rax\n"; 
     }
 
 
@@ -817,11 +806,10 @@ public class CodeGen_Visitor implements Visitor {
 
 
     public Object visit(True node, Object data){ 
-        // Push 1 onto the stack
-        node.accept(ppVisitor, data);
-        String trueCode = "# True\n"
-                        + "pushq $1\n";
-        return trueCode;
+        // not in MiniC
+        // pushes 1 onto the stack
+
+        return "pushq $1\n"; 
     }
 
 
@@ -854,18 +842,24 @@ public class CodeGen_Visitor implements Visitor {
         return vars; 
     }
 
-    public Object visit(While node, Object data) {
-        String whileCode = "# While\n";
-        
-        whileCode += (String) node.e.accept(this, data);
-        whileCode += "cmpq $0, %rax\n";
-        whileCode += "je end_while\n";
-        whileCode += (String) node.s.accept(this, data);
-        whileCode += "jmp test_while\n";
-        whileCode += "end_while:\n";
-        
-        return whileCode;
+    public Object visit(While node, Object data){ 
+        // not in MiniC
+        Exp e=node.e;
+        Statement s=node.s;
+        String eCode = (String) node.e.accept(this, data);
+        String Scode = (String) node.s.accept(this, data);
+        String label1 = "L"+labelNum;
+        labelNum += 1;
+        String label2 = "L"+labelNum;
+        labelNum += 1;
+
+        return eCode +
+        label1+":\n"+
+        "popq %rax\n"+
+        "cmpq $0, %rax\n"+
+        "jne "+label2+"\n"+
+        Scode+
+        "jmp "+label1+"\n"+
+        label2+":\n"; 
     }
-
 }
-

@@ -454,6 +454,18 @@ public class PA5 implements PA5Constants {
     throw new Error("Missing return statement in function");
   }
 
+// Print statement
+  static final public Statement Print(Exp e) throws ParseException {
+  Exp exp;
+    jj_consume_token(PRINTLN);
+    jj_consume_token(LPAREN);
+    exp = Exp();
+    jj_consume_token(RPAREN);
+    jj_consume_token(SEMICOLON);
+   {if (true) return new Print(exp);}
+    throw new Error("Missing return statement in function");
+  }
+
   static private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_1(); }
@@ -701,10 +713,10 @@ public class PA5 implements PA5Constants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2000,0x6000,0x8000000,0x1a0000,0x1a0000,0x40000000,0x0,0x1018000,0x18000,0x0,0x8000000,};
+      jj_la1_0 = new int[] {0x4000,0xc000,0x10000000,0x340000,0x340000,0x80000000,0x0,0x2030000,0x30000,0x0,0x10000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x820,0x20,0x0,0x180,0xc02,0x402,0x800,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x1040,0x40,0x0,0x300,0x1804,0x804,0x1000,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[7];
   static private boolean jj_rescan = false;
@@ -914,7 +926,7 @@ public class PA5 implements PA5Constants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[44];
+    boolean[] la1tokens = new boolean[45];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -931,7 +943,7 @@ public class PA5 implements PA5Constants {
         }
       }
     }
-    for (int i = 0; i < 44; i++) {
+    for (int i = 0; i < 45; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

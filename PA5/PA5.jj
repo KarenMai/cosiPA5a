@@ -85,6 +85,7 @@ TOKEN:
 {
    <PUBLIC:     "public">
 |  <PREFACE:    "#include <stdio.h>\n#include <stdbool.h>\nvoid print(int n){printf(\"%10d\\n\",n);}">
+|  <PRINT:      "printf">
 |  <CLASS:      "class">
 |  <STATIC:     "static">
 |  <VOID:       "void">
@@ -382,3 +383,13 @@ ExpList ExpList() :
   (<COMMA> b=Exp() {a=new ExpList(a,b);})*
   {return a;}
 }
+// Print statement
+Statement Print(Exp e) :
+{
+  Exp exp;
+}
+{
+  <PRINTLN> <LPAREN> exp=Exp() <RPAREN> <SEMICOLON>
+  {return new Print(exp);}
+}
+

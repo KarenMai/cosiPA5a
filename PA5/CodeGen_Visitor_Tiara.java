@@ -728,7 +728,6 @@ public class CodeGen_Visitor implements Visitor {
         String expCode = (String) node.e.accept(this, data);
 
         String result = 
-        
             expCode
         + "# "+node.accept(ppVisitor, 0)
         +   "popq %rdi\n"
